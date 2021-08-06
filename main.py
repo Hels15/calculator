@@ -35,10 +35,10 @@ class Calculator(QObject):
         if value == "+/-":
             self._change_sign()
             return
-        if value == "%":
-            self._percentage()
-            return
-        print(value)
+
+
+
+
         self._display += value
         self.display_changed.emit()
 
@@ -51,21 +51,35 @@ class Calculator(QObject):
         self._display = ""
         self.display_changed.emit()
 
-    def _percentage(self):
-        current_display = self._display
+    def _percentage(self,current_text):
+        current_display  = current_text
+        values = current_display.split("%")
+        if len(values) != 2:
+            raise ValueError("This implementation only supports a single % operation")
 
-        num1, num2 = current_display.split("%")
-        num1 = self.coerce(num1)
+        num1 = values[0]
+        num2 = values[1]
+        num1 =self.coerce(num1)
         num2 = self.coerce(num2)
+
+
+        print(num1,num2)
+
         return num1 * (num2/100)
 
 
 
-
-
     def _calc(self):
+        current_text = self._display
+        if "%" in self._display:
+            self._percentage(current_text)
+            self.result = self._percentage(current_text)
+
+
         self._display = str(eval(self._display))
         self.display_changed.emit()
+
+
     display = Property(str,_get_display,notify=display_changed)
 
     def _change_sign(self):
