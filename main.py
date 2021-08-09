@@ -74,6 +74,8 @@ class Calculator(QObject):
         if "%" in self._display:
             self._percentage(current_text)
             self.result = self._percentage(current_text)
+            self._display = str(int(self.result))
+            self.display_changed.emit()
 
 
         self._display = str(eval(self._display))
